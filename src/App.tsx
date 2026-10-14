@@ -323,7 +323,6 @@ export default function App() {
           onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void generate(); } }} /></div>
         <div className="composer-bottom"><button type="button" className="upload-button" disabled={uploading || !ready} onClick={() => fileInput.current?.click()}>{uploading ? <LoaderCircle size={16} className="spin" /> : <ImagePlus size={16} />}{uploading ? '导入中' : '上传图片'}</button><span>Enter 生成 · Shift + Enter 换行</span><button className="generate-button" type="submit" disabled={!prompt.trim() || generating || !ready}>{generating ? <LoaderCircle size={16} className="spin" /> : <ArrowUp size={17} />}{generating ? '生成中' : '生成图片'}</button></div>
       </form>
-      <div className="model-credit">Powered by Ming Design · Ming Layer · Ling-VL</div>
       <input ref={fileInput} className="hidden-input" type="file" accept=".png,.jpg,.jpeg,.webp" multiple onChange={event => { if (event.target.files) void uploadFiles([...event.target.files]); }} />
     </main>
     {toast && <div className={`toast ${toast.error ? 'error' : ''}`} role="status">{toast.error ? <CircleAlert size={17} /> : <CheckCircle2 size={17} />}<span>{toast.message}</span><button className="icon-button" aria-label="关闭提示" onClick={() => setToast(null)}><X size={15} /></button></div>}
