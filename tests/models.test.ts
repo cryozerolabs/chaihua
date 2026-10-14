@@ -42,6 +42,14 @@ describe('VL model requests', () => {
     await prepare(); vi.stubGlobal('fetch', vi.fn().mockResolvedValue(visionResponse(JSON.stringify({ ...plan, backgroundDescription: undefined }))));
     await expect(askVision('layer_plan', layerPlanSchema, '看图拆分', [])).rejects.toThrow('backgroundDescription');
   });
+  it('identifies model-whitelist denials using the configured vision model without retrying', async () => {
+    await prepare();
+    const mockedFetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: { message: 'The requested model is not included in this API key\'s allowed model list' } }), { status: 403 }));
+    vi.stubGlobal('fetch', mockedFetch);
+    await expect(askVision('layer_plan', layerPlanSchema, '看图拆分', []))
+      .rejects.toThrow(`未授权调用 视觉模型（${MODEL_IDS.vision}），请检查 API key 的模型白名单。`);
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+  });
   it('repairs fenced JSON with a trailing comma', async () => {
     await prepare(); vi.stubGlobal('fetch', vi.fn().mockResolvedValue(visionResponse('```json\n' + JSON.stringify(plan).replace(/}$/, ',}') + '\n```')));
     await expect(askVision('layer_plan', layerPlanSchema, '看图拆分', [])).resolves.toMatchObject({ backgroundDescription: '白色背景' });

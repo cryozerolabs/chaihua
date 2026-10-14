@@ -21,7 +21,7 @@ export type RetryProgress = (message: string) => void | Promise<void>;
 const MODEL_LABELS = {
   [MODEL_IDS.design]: "Ming Design",
   [MODEL_IDS.layer]: "Ming Layer",
-  [MODEL_IDS.vision]: 'Ling-VL',
+  [MODEL_IDS.vision]: `视觉模型（${MODEL_IDS.vision}）`,
 };
 
 async function waitToRetry(
@@ -137,6 +137,8 @@ async function request(
         ? `${settings.providerName} 密钥无效，请检查 .env 中的 ${settings.keyVariable}。`
         : status === 402
           ? `${settings.providerName} 账户额度不足，请检查账户余额。`
+          : status === 403
+            ? `${settings.providerName} 未授权调用 ${label}，请检查 API key 的模型白名单。`
           : status === 404 && /No endpoints? found/i.test(payload?.error?.message ?? '')
             ? `${settings.providerName} 当前没有 ${label} 的可用线路，请检查模型 ID 或该平台的模型服务状态`
           : status === 429
@@ -188,12 +190,12 @@ export async function askVision<T extends z.ZodType>(name: string, schema: T, in
     await mkdir(directory, { recursive: true });
     await writeFile(path.join(directory, `${Date.now()}-${name}.json`), redactSecrets(JSON.stringify({ name, finishReason, content,
       validation: error instanceof z.ZodError ? error.issues : safeError(error) }, null, 2)));
-    if (finishReason === 'length') throw new Error('Ling-VL 的拆层方案输出被截断，请重试当前步骤。');
+    if (finishReason === 'length') throw new Error('视觉模型的拆层方案输出被截断，请重试当前步骤。');
     if (error instanceof z.ZodError) {
       const field = error.issues[0]?.path.join('.') || 'JSON';
-      throw new Error(`Ling-VL 的方案字段不符合要求（${field}），请重试当前步骤。`);
+      throw new Error(`视觉模型的方案字段不符合要求（${field}），请重试当前步骤。`);
     }
-    throw new Error('Ling-VL 未返回有效的 JSON 方案，请重试当前步骤。');
+    throw new Error('视觉模型未返回有效的 JSON 方案，请重试当前步骤。');
   }
 }
 
