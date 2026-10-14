@@ -1,0 +1,39 @@
+{
+  "name": "chaihua",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx server/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "ag-psd": "^31.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonrepair": "^3.15.0",
+    "konva": "^10.0.0",
+    "lucide-react": "^0.577.0",
+    "multer": "^2.0.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-konva": "^19.3.0",
+    "sharp": "^0.35.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "concurrently": "^9.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4",
+    "vitest": "^4.1.0"
+  }
+}
