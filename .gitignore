@@ -6,4 +6,5 @@ dist/
 !.env.example
 .DS_Store
 test-results/
+output/
 *.log
